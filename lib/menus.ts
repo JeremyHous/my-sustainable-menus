@@ -14,6 +14,8 @@ export type Menu = {
   id: string;
   name: string;
   items: MenuItem[];
+  /** Ticked by the chef when fans (consumers) validated or enjoyed the menu. */
+  fanApproved?: boolean;
 };
 
 export type MenuInput = Omit<Menu, "id">;
@@ -55,6 +57,23 @@ export function calculateImpact(
     else missing += 1;
   }
   return { total, missing };
+}
+
+export type RankedMenu = { menu: Menu; total: number; missing: number };
+
+/**
+ * Menus sorted from lowest to highest carbon impact (best first); ties sorted by name.
+ * Incomplete menus (using a deleted ingredient) come last, since their score is too low.
+ */
+export function rankMenus(menus: Menu[], ingredients: Ingredient[]): RankedMenu[] {
+  return menus
+    .map((menu) => ({ menu, ...calculateImpact(menu.items, ingredients) }))
+    .sort(
+      (a, b) =>
+        Number(a.missing > 0) - Number(b.missing > 0) ||
+        a.total - b.total ||
+        a.menu.name.localeCompare(b.menu.name),
+    );
 }
 
 /** Formats a gCO2e amount, switching to kgCO2e from 1000 g. */

@@ -14,6 +14,8 @@ import {
   type MenuInput,
   type MenuItem,
 } from "@/lib/menus";
+import FanStar from "./fan-star";
+import MenuDashboard from "./menu-dashboard";
 
 const inputClass =
   "w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-black dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50";
@@ -80,6 +82,7 @@ function MenuEditor({
         }))
       : [newRow()],
   );
+  const [fanApproved, setFanApproved] = useState(menu?.fanApproved ?? false);
   const [error, setError] = useState("");
 
   const { total } = calculateImpact(validItems(rows), ingredients);
@@ -92,8 +95,9 @@ function MenuEditor({
     event.preventDefault();
     const result = validate(name, rows, menus, menu?.id);
     if ("error" in result) return setError(result.error);
-    if (menu) updateMenu(menu.id, result.input);
-    else addMenu(result.input);
+    const input = { ...result.input, fanApproved };
+    if (menu) updateMenu(menu.id, input);
+    else addMenu(input);
     onDone();
   }
 
@@ -179,7 +183,17 @@ function MenuEditor({
         Carbon impact of this portion: <strong>{formatCo2(total)}</strong>
       </p>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      <label className="flex items-center gap-2 text-sm">
+        <input
+          type="checkbox"
+          checked={fanApproved}
+          onChange={(e) => setFanApproved(e.target.checked)}
+          className="h-4 w-4 accent-green-600"
+        />
+        Validated / enjoyed by fans <FanStar />
+      </label>
+
+      {error &&<p className="text-sm text-red-600">{error}</p>}
       <div className="flex gap-2">
         <button
           type="submit"
@@ -220,7 +234,10 @@ function MenuCard({
     <li className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
         <div className="flex-1">
-          <p className="font-medium text-black dark:text-zinc-50">{menu.name}</p>
+          <p className="flex items-center gap-1 font-medium text-black dark:text-zinc-50">
+            {menu.name}
+            {menu.fanApproved && <FanStar />}
+          </p>
           <p className="text-green-700 dark:text-green-400">
             {formatCo2(total)} per portion
           </p>
@@ -290,48 +307,54 @@ export default function MenuLibrary({
   }
 
   return (
-    <div className="w-full max-w-3xl">
-      {ingredients.length === 0 ? (
-        <p className="rounded-lg border border-zinc-200 bg-white p-4 text-zinc-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400">
-          Your ingredient library is empty. First{" "}
-          <Link href="/ingredients" className="font-medium text-green-700 underline dark:text-green-400">
-            add ingredients
-          </Link>{" "}
-          with their emission factors, then come back to compose your menus.
-        </p>
-      ) : (
-        <MenuEditor
-          key={editingMenu ? editingMenu.id : `new-${formVersion}`}
-          menu={editingMenu}
-          menus={menus}
-          ingredients={ingredients}
-          onDone={handleDone}
-        />
-      )}
+    <div className="grid w-full max-w-6xl gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <div className="min-w-0">
+        {ingredients.length === 0 ? (
+          <p className="rounded-lg border border-zinc-200 bg-white p-4 text-zinc-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400">
+            Your ingredient library is empty. First{" "}
+            <Link href="/ingredients" className="font-medium text-green-700 underline dark:text-green-400">
+              add ingredients
+            </Link>{" "}
+            with their emission factors, then come back to compose your menus.
+          </p>
+        ) : (
+          <MenuEditor
+            key={editingMenu ? editingMenu.id : `new-${formVersion}`}
+            menu={editingMenu}
+            menus={menus}
+            ingredients={ingredients}
+            onDone={handleDone}
+          />
+        )}
 
-      {/* Library section; belowForm is drawn behind it as a background. */}
-      <section className="relative mt-10 min-h-56">
-        {belowForm}
-        <div className="relative">
-          <h2 className="text-xl font-semibold text-black dark:text-zinc-50">
-            Your menu library ({menus.length})
-          </h2>
-          {menus.length === 0 ? (
-            <p className="mt-3 text-zinc-600 dark:text-zinc-400">No menus saved yet.</p>
-          ) : (
-            <ul className="mt-4 flex flex-col gap-3">
-              {menus.map((menu) => (
-                <MenuCard
-                  key={menu.id}
-                  menu={menu}
-                  ingredients={ingredients}
-                  onEdit={() => handleEdit(menu.id)}
-                />
-              ))}
-            </ul>
-          )}
-        </div>
-      </section>
+        {/* Library section; belowForm is drawn behind it as a background. */}
+        <section className="relative mt-10 min-h-56">
+          {belowForm}
+          <div className="relative">
+            <h2 className="text-xl font-semibold text-black dark:text-zinc-50">
+              Your menu library ({menus.length})
+            </h2>
+            {menus.length === 0 ? (
+              <p className="mt-3 text-zinc-600 dark:text-zinc-400">No menus saved yet.</p>
+            ) : (
+              <ul className="mt-4 flex flex-col gap-3">
+                {menus.map((menu) => (
+                  <MenuCard
+                    key={menu.id}
+                    menu={menu}
+                    ingredients={ingredients}
+                    onEdit={() => handleEdit(menu.id)}
+                  />
+                ))}
+              </ul>
+            )}
+          </div>
+        </section>
+      </div>
+
+      <div className="lg:sticky lg:top-4 lg:self-start">
+        <MenuDashboard menus={menus} ingredients={ingredients} />
+      </div>
     </div>
   );
 }
