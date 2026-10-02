@@ -1,4 +1,4 @@
-# Sustainable Menus
+# My Sustainable Menus
 
 A web app that helps chefs design menus with a low carbon footprint. Chefs build their own ingredient library with carbon emission factors, compose menus from it, and see the carbon impact of every portion as they go.
 
@@ -13,6 +13,16 @@ The chef designs the menu. The app only provides the data and the calculations.
 - **Carbon impact:** calculated live for each ingredient and for the whole portion (grams × emission factor).
 - **Dashboard and podium:** every menu ranked by carbon score, lowest first, with the top 3 shown on a podium.
 - **Fan approval:** tick a box when fans validated or enjoyed a menu, and a yellow star appears next to its name.
+
+The app ships with no ingredient data and never suggests menus or dishes: every ingredient, emission factor and menu comes from the chef.
+
+## How the carbon score is calculated
+
+- Each ingredient has an emission factor in **gCO2e per gram**, entered by the chef along with its source.
+- Each menu is **one adult portion**, with a quantity in **grams** for each ingredient.
+- Ingredient impact = grams × emission factor. The menu's score is the sum of its ingredients' impacts, shown in gCO2e, or in kgCO2e from 1000 g.
+- Scores always use the current emission factors, so editing an ingredient updates every menu that uses it.
+- If an ingredient is deleted from the library, menus that used it are flagged as incomplete and ranked last on the dashboard.
 
 ## Tech stack
 
@@ -39,13 +49,16 @@ npm run build    # build the static site into out/
 npm run lint     # run ESLint
 ```
 
+`npm run start` does not work, because `next start` cannot serve a static export. Use `npm run dev` to view the app, and `npm run build` to check that the export builds.
+
 ## Data storage
 
 There is no backend. Ingredients and menus are saved in the browser's `localStorage`, so:
 
 - the data stays on one browser on one device;
 - data entered locally (`localhost:3000`) does not appear on the live site, and the other way round;
-- clearing the browser's site data erases the libraries.
+- clearing the browser's site data erases the libraries;
+- there is no export or backup yet.
 
 ## Project structure
 
@@ -61,13 +74,20 @@ lib/
   ingredients.ts      Ingredient data and actions
   menus.ts            Menu data, carbon calculation and ranking
 docs/                 Next.js reference notes used while building
+public/               Static assets
 ```
 
 ## Deployment
 
 The site is deployed to GitHub Pages as a static export.
 
-- `next.config.ts` enables `output: "export"` and serves production builds under `/my-sustainable-menus`.
-- `.github/workflows/deploy.yml` builds and publishes the site on every push to `main`.
+- `next.config.ts` enables `output: "export"` and serves production builds under `/my-sustainable-menus` (the dev server has no base path).
+- `.github/workflows/deploy.yml` builds and publishes the site on every push to `main`. It can also be run by hand from the **Actions** tab.
 
 In the repository settings, **Settings → Pages → Source** must be set to **GitHub Actions**.
+
+Because there is no server, the app can't use features such as Server Actions, API routes or image optimization.
+
+## Working with AI coding agents
+
+`AGENTS.md` holds the project rules and conventions for coding agents, and `CLAUDE.md` imports it for Claude Code. Its top block is managed by `next dev`; edit only below it.
