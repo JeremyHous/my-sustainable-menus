@@ -27,6 +27,76 @@ function IngredientsPictogram() {
   );
 }
 
+// Collapsible help on finding and entering emission factors. It names kinds of
+// sources only: the app never supplies emission data itself.
+function EmissionFactorGuide() {
+  return (
+    <details className="mb-8 w-full max-w-3xl rounded-lg border border-zinc-200 bg-white p-4 text-sm text-zinc-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400">
+      <summary className="cursor-pointer font-medium text-black dark:text-zinc-50">
+        Where to find emission factors
+      </summary>
+      <div className="mt-4 flex flex-col gap-4">
+        <section>
+          <h2 className="font-medium text-black dark:text-zinc-50">
+            Entering the number
+          </h2>
+          <p className="mt-1">
+            Most sources give figures in kgCO2e per kg, which is the same
+            number in gCO2e per gram: a figure of 2.5 kgCO2e/kg is entered as
+            2.5. If a source gives gCO2e per 100 g, divide it by 100.
+          </p>
+        </section>
+        <section>
+          <h2 className="font-medium text-black dark:text-zinc-50">
+            Where to look
+          </h2>
+          <ul className="mt-1 list-disc space-y-1 pl-5">
+            <li>
+              National food life-cycle databases published by public
+              environmental or agricultural agencies.
+            </li>
+            <li>
+              Peer-reviewed studies and reviews of food life-cycle assessments.
+            </li>
+            <li>
+              Your suppliers and producers, through product carbon labels or
+              environmental product declarations.
+            </li>
+            <li>Food carbon-footprint tools and certification bodies.</li>
+          </ul>
+        </section>
+        <section>
+          <h2 className="font-medium text-black dark:text-zinc-50">
+            Comparing fairly
+          </h2>
+          <ul className="mt-1 list-disc space-y-1 pl-5">
+            <li>
+              Use the same source for as many ingredients as you can, because
+              sources measure in different ways.
+            </li>
+            <li>
+              Check what the figure covers: farming only, or also processing,
+              packaging and transport.
+            </li>
+            <li>
+              Match the ingredient you actually buy: origin, season, fresh or
+              frozen, and how it was produced.
+            </li>
+            <li>
+              Check the weight basis (raw or cooked, whole or edible part), and
+              enter your quantities in menus on the same basis.
+            </li>
+            <li>
+              Note the source and its year in the Source field, so you can
+              check or update the figure later.
+            </li>
+          </ul>
+        </section>
+      </div>
+    </details>
+  );
+}
+
 export default function Page() {
   return (
     <main className="flex flex-1 flex-col items-center bg-zinc-50 px-4 py-16 font-sans dark:bg-black">
@@ -37,6 +107,7 @@ export default function Page() {
         Add each ingredient with its carbon emission factor in gCO2e per gram,
         and note where the figure comes from.
       </p>
+      <EmissionFactorGuide />
       <IngredientLibrary belowForm={<IngredientsPictogram />} />
     </main>
   );

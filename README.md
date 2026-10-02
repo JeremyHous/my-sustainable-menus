@@ -24,6 +24,14 @@ The app ships with no ingredient data and never suggests menus or dishes: every 
 - Scores always use the current emission factors, so editing an ingredient updates every menu that uses it.
 - If an ingredient is deleted from the library, menus that used it are flagged as incomplete and ranked last on the dashboard.
 
+## Finding emission factors
+
+The app doesn't supply emission factors: chefs bring their own. The **Where to find emission factors** panel on `/ingredients` gives them this guidance:
+
+- **Units:** most sources publish kgCO2e per kg, which is the same number in gCO2e per gram (2.5 kgCO2e/kg is entered as 2.5). A figure in gCO2e per 100 g is divided by 100.
+- **Where to look:** national food life-cycle databases from public agencies, peer-reviewed studies and reviews, suppliers' carbon labels or environmental product declarations, and food carbon-footprint tools or certification bodies.
+- **Comparing fairly:** use one source for as many ingredients as possible, check what each figure covers (farming only, or also processing, packaging and transport), match the ingredient actually bought (origin, season, fresh or frozen, production method), keep menu quantities on the same weight basis as the figure (raw or cooked, whole or edible part), and record the source and year.
+
 ## Tech stack
 
 - [Next.js 16](https://nextjs.org) (App Router) with React 19
