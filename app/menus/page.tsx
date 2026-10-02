@@ -1,6 +1,6 @@
 import MenuLibrary from "./menu-library";
 
-function SportFansPictogram() {
+function MenuPictogram() {
   return (
     <svg
       viewBox="0 0 240 160"
@@ -12,24 +12,15 @@ function SportFansPictogram() {
       aria-hidden="true"
       className="pointer-events-none absolute inset-x-0 top-0 mx-auto h-56 w-80 max-w-full text-amber-500/15 dark:text-amber-300/10"
     >
-      {/* Fan 1: cheering with a drink */}
-      <circle cx="70" cy="62" r="14" />
-      <path d="M58 84h24M54 84l-4 8M86 84l4 8" />
-      <path d="M44 156v-44c0-12 10-20 26-20s26 8 26 20v44" />
-      <path d="M90 100l14-24" />
-      <path d="M98 52h16l-3 22h-10Z" />
-      <path d="M100 60h12" />
-      {/* Fan 2: eating a burger */}
-      <circle cx="170" cy="62" r="14" />
-      <path d="M158 84h24M154 84l-4 8M186 84l4 8" />
-      <path d="M144 156v-44c0-12 10-20 26-20s26 8 26 20v44" />
-      <path d="M150 104l-4-18 8-12" />
-      <path d="M140 64c0-8 8-12 14-12s14 4 14 12Z" />
-      <path d="M140 70h28M142 76h24" />
-      {/* Ball */}
-      <circle cx="120" cy="136" r="16" />
-      <path d="M120 128l7 5-3 8h-8l-3-8Z" />
-      <path d="M120 120v8m7 5l8-3m-11 11l5 7m-13-7l-5 7m2-11l-8-3" />
+      {/* Open menu card */}
+      <path d="M120 22L40 30v112l80 8 80-8V30Z" />
+      <path d="M120 22v128" />
+      {/* Left page: title and dishes */}
+      <path d="M54 50h52" />
+      <path d="M58 70h44m-44 14h30m-30 18h44m-44 14h30m-30 14h40" />
+      {/* Right page: leaf and dishes */}
+      <path d="M150 66c0-14 10-22 22-22 0 14-10 22-22 22Zm0 0l14-14" />
+      <path d="M136 86h50m-46 16h42m-42 14h30m-30 14h42" />
     </svg>
   );
 }
@@ -45,7 +36,7 @@ export default function Page() {
         quantity in grams for one adult portion. The carbon impact is
         calculated as you go.
       </p>
-      <MenuLibrary belowForm={<SportFansPictogram />} />
+      <MenuLibrary belowForm={<MenuPictogram />} />
     </main>
   );
 }
