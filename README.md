@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sustainable Menus
 
-## Getting Started
+A web app that helps chefs design menus with a low carbon footprint. Chefs build their own ingredient library with carbon emission factors, compose menus from it, and see the carbon impact of every portion as they go.
 
-First, run the development server:
+The chef designs the menu. The app only provides the data and the calculations.
+
+**Live site:** https://jeremyhous.github.io/my-sustainable-menus/
+
+## Features
+
+- **Ingredient library** (`/ingredients`): add, edit and delete ingredients, each with a carbon emission factor in gCO2e per gram and the source of that figure.
+- **Menu library** (`/menus`): create, name, edit and delete menus (one adult portion), choosing ingredients from the library and entering quantities in grams.
+- **Carbon impact:** calculated live for each ingredient and for the whole portion (grams × emission factor).
+- **Dashboard and podium:** every menu ranked by carbon score, lowest first, with the top 3 shown on a podium.
+- **Fan approval:** tick a box when fans validated or enjoyed a menu, and a yellow star appears next to its name.
+
+## Tech stack
+
+- [Next.js 16](https://nextjs.org) (App Router) with React 19
+- TypeScript
+- Tailwind CSS v4
+- ESLint
+
+## Getting started
+
+Requires Node.js 20.9 or later.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install      # install dependencies (first time only)
+npm run dev      # start the dev server
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Other scripts:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build    # build the static site into out/
+npm run lint     # run ESLint
+```
 
-## Learn More
+## Data storage
 
-To learn more about Next.js, take a look at the following resources:
+There is no backend. Ingredients and menus are saved in the browser's `localStorage`, so:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- the data stays on one browser on one device;
+- data entered locally (`localhost:3000`) does not appear on the live site, and the other way round;
+- clearing the browser's site data erases the libraries.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project structure
 
-## Deploy on Vercel
+```
+app/
+  layout.tsx          Root layout with the navigation bar
+  page.tsx            Home page
+  about/              About page
+  ingredients/        Ingredient library page
+  menus/              Menu library, dashboard and podium
+lib/
+  local-store.ts      Shared localStorage helper
+  ingredients.ts      Ingredient data and actions
+  menus.ts            Menu data, carbon calculation and ranking
+docs/                 Next.js reference notes used while building
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The site is deployed to GitHub Pages as a static export.
+
+- `next.config.ts` enables `output: "export"` and serves production builds under `/my-sustainable-menus`.
+- `.github/workflows/deploy.yml` builds and publishes the site on every push to `main`.
+
+In the repository settings, **Settings → Pages → Source** must be set to **GitHub Actions**.
