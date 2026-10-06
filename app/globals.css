@@ -24,3 +24,17 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Home page: chalk pitch lines drawing in on load. */
+@theme {
+  --animate-chalk: chalk 1.8s ease-out both;
+
+  @keyframes chalk {
+    from {
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+}
