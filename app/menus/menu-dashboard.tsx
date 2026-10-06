@@ -2,38 +2,53 @@ import type { Ingredient } from "@/lib/ingredients";
 import { formatCo2, rankMenus, type Menu, type RankedMenu } from "@/lib/menus";
 import FanStar from "./fan-star";
 
-// Podium steps, drawn in the classic order: 2nd, 1st, 3rd.
+// Medal blocks in rank order. `order` draws them in the classic 2nd, 1st,
+// 3rd arrangement while screen readers still hear 1st, 2nd, 3rd.
 const steps = [
-  { place: 2, height: "h-16", tone: "bg-zinc-300 dark:bg-zinc-700" },
-  { place: 1, height: "h-24", tone: "bg-amber-400 dark:bg-amber-500" },
-  { place: 3, height: "h-10", tone: "bg-orange-300 dark:bg-orange-800" },
+  { place: 1, label: "1st", height: "h-28", order: "order-2", medal: "bg-[#F5C518]", delay: "[animation-delay:150ms]" },
+  { place: 2, label: "2nd", height: "h-20", order: "order-1", medal: "bg-[#C9CFCB]", delay: "[animation-delay:300ms]" },
+  { place: 3, label: "3rd", height: "h-14", order: "order-3", medal: "bg-[#C98A4B]", delay: "[animation-delay:450ms]" },
 ];
 
+// Medal ceremony on the pitch: the three lowest-carbon complete menus stand
+// on a chalk touchline over turf stripes.
 function Podium({ ranked }: { ranked: RankedMenu[] }) {
   return (
-    <div className="flex items-end gap-2" role="img" aria-label="Podium of the three menus with the lowest carbon impact">
-      {steps.map(({ place, height, tone }) => {
-        const entry = ranked[place - 1];
-        return (
-          <div key={place} className="flex min-w-0 flex-1 flex-col items-center">
-            <p
-              className="flex w-full items-center justify-center gap-1 text-sm font-medium text-black dark:text-zinc-50"
-              title={entry?.menu.name}
-            >
-              <span className="truncate">{entry ? entry.menu.name : "–"}</span>
-              {entry?.menu.fanApproved && <FanStar />}
-            </p>
-            <p className="mb-1 text-xs text-green-700 dark:text-green-400">
-              {entry ? formatCo2(entry.total) : " "}
-            </p>
-            <div
-              className={`flex w-full items-start justify-center rounded-t-md pt-1 text-lg font-bold text-white ${height} ${tone}`}
-            >
-              {place}
-            </div>
-          </div>
-        );
-      })}
+    <div className="overflow-hidden rounded-md bg-[repeating-linear-gradient(90deg,#1F5130_0_32px,#245C37_32px_64px)] px-3 pt-4 text-[#F3F1E7] dark:bg-[repeating-linear-gradient(90deg,#11301C_0_32px,#153822_32px_64px)]">
+      <h2 className="font-[family-name:var(--font-display)] text-2xl leading-none font-black uppercase">
+        Lowest carbon menus
+      </h2>
+      <p className="mt-1 text-xs text-[#F3F1E7]/75">Carbon per adult portion</p>
+      <ol className="mt-4 flex items-end gap-2 border-b-4 border-[#F3F1E7]">
+        {steps.map(({ place, label, height, order, medal, delay }) => {
+          const entry = ranked[place - 1];
+          return (
+            <li key={place} className={`flex min-w-0 flex-1 flex-col ${order}`}>
+              <span className="sr-only">{label}: </span>
+              <p
+                className="flex items-center justify-center gap-1 text-xs font-medium"
+                title={entry?.menu.name}
+              >
+                <span className="truncate">{entry ? entry.menu.name : "No menu yet"}</span>
+                {entry?.menu.fanApproved && <FanStar />}
+              </p>
+              <p className="mb-1.5 text-center font-[family-name:var(--font-display)] text-xl leading-tight font-bold">
+                {entry ? formatCo2(entry.total) : " "}
+              </p>
+              <div
+                aria-hidden="true"
+                className={`flex origin-bottom justify-center rounded-t-sm pt-1 font-[family-name:var(--font-display)] text-5xl leading-none font-black motion-safe:animate-rise ${height} ${delay} ${
+                  entry
+                    ? `${medal} text-[#14231A]`
+                    : "border-2 border-b-0 border-dashed border-[#F3F1E7]/50 text-[#F3F1E7]/50"
+                }`}
+              >
+                {place}
+              </div>
+            </li>
+          );
+        })}
+      </ol>
     </div>
   );
 }
@@ -50,12 +65,7 @@ export default function MenuDashboard({
 
   return (
     <aside className="flex flex-col gap-6 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
-      <div>
-        <h2 className="mb-4 text-lg font-semibold text-black dark:text-zinc-50">
-          Lowest carbon menus
-        </h2>
-        <Podium ranked={ranked.filter((entry) => entry.missing === 0)} />
-      </div>
+      <Podium ranked={ranked.filter((entry) => entry.missing === 0)} />
 
       <div>
         <h2 className="mb-2 text-lg font-semibold text-black dark:text-zinc-50">Dashboard</h2>
