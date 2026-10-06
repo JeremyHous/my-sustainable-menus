@@ -1,4 +1,12 @@
+import { Big_Shoulders } from "next/font/google";
 import MenuLibrary from "./menu-library";
+
+// Stadium-signage face for the podium numbers and scores.
+const display = Big_Shoulders({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["700", "900"],
+});
 
 function MenuPictogram() {
   return (
@@ -27,7 +35,7 @@ function MenuPictogram() {
 
 export default function Page() {
   return (
-    <main className="flex flex-1 flex-col items-center bg-zinc-50 px-4 py-16 font-sans dark:bg-black">
+    <main className={`${display.variable} flex flex-1 flex-col items-center bg-zinc-50 px-4 py-16 font-sans dark:bg-black`}>
       <h1 className="text-center text-3xl font-semibold tracking-tight text-black dark:text-zinc-50">
         Create your Menu
       </h1>
